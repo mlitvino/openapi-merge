@@ -12,7 +12,8 @@
     "dev": "tsx src/index.ts",
     "build": "tsc -p tsconfig.json",
     "clean": "rm -rf dist",
-    "lint": "eslint . --ext .ts,.tsx"
+    "lint": "eslint . --ext .ts,.tsx",
+    "test": "tsx test/case1/main.ts"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

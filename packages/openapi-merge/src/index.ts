@@ -1,5 +1,5 @@
-export function helloOpenApiMerge() {
+import type { InputSource } from './types.js';
+
+export function merge(inputs: InputSource[]) {
   return 'Hello';
 }
-
-console.log(helloOpenApiMerge());
