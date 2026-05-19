@@ -1,5 +1,5 @@
 export function helloOpenApiMerge() {
-  return "Hello";
+  return 'Hello';
 }
 
 console.log(helloOpenApiMerge());

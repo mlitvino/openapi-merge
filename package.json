@@ -6,6 +6,11 @@
   ],
   "scripts": {
     "build": "pnpm -r build",
-    "dev": "pnpm -r dev"
+    "dev": "pnpm -r dev",
+    "lint": "pnpm --filter openapi-merge lint"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.0",
+    "globals": "^17.6.0"
   }
 }
