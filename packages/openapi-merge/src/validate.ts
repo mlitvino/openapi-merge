@@ -1,33 +1,37 @@
-import { throwMergeError } from './errors.js';
-import type { MergeOptions } from './types';
+import type { Document as OpenApiV3_0 } from '@scalar/openapi-types/3.0';
 
-export function validate(rawSpecs: unknown[], options?: MergeOptions): void {
-  validateVersions(rawSpecs, options?.versionPolicy);
+import { throwMergeError } from './errors.js';
+import type { MergeContext, MergeOptions } from './types';
+
+export function validate(ctx: MergeContext, options?: MergeOptions): void {
+  validateVersions(ctx, options?.versionPolicy);
 }
 
 export function validateVersions(
-  rawSpecs: unknown[],
-  policy: MergeOptions['versionPolicy']
+  ctx: MergeContext,
+  policy: MergeOptions['versionPolicy'],
 ): void {
-  if (!policy) {
+  if (policy === undefined || policy?.mode === 'skip') {
+    ctx.parsedSpecs = ctx.rawSpecs.filter((spec) => isOpenApiV3_0(spec));
     return;
   }
 
-  for (const spec of rawSpecs) {
-    if (!isRecord(spec)) {
-      throwMergeError('invalid-version', 'OpenAPI document must be an object.');
-    }
-
-    const version = typeof spec.openapi === 'string' ? spec.openapi : '';
-    if (!version.startsWith(`${policy.targetVersion}.`)) {
+  for (const spec of ctx.rawSpecs) {
+    if (!isOpenApiV3_0(spec)) {
       throwMergeError(
         'invalid-version',
-        `Unsupported OpenAPI version: ${version || 'unknown'}. Expected ${policy.targetVersion}.x`
+        `Unsupported or invalid OpenAPI v${policy.targetVersion} document.`
       );
     }
+
+    ctx.parsedSpecs.push(spec);
   }
 }
 
+function isOpenApiV3_0(value: unknown): value is OpenApiV3_0 {
+  return true;
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null;
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
 }

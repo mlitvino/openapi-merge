@@ -7,6 +7,8 @@ export type InputSource = { input: OpenApiDocument | string };
 export type VersionPolicy = {
   mode: 'strict';
   targetVersion: '3.0';
+} | {
+  mode: 'skip';
 };
 
 export type MergeOptions = {
@@ -26,5 +28,5 @@ export type MergeError =
 
 export type MergeContext = {
   rawSpecs: unknown[],
-  parsedSpecs: OpenApiDocument[];
+  parsedSpecs: OpenApiV3_0[];
 }

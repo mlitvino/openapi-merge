@@ -1,5 +1,5 @@
 import { createContext } from './utils';
-import { mergeCore } from './core';
+import { mergeCore } from './core/core';
 import { err, handleMergeError } from './errors';
 import { loadSpecs, loadSpecsAsync } from './load';
 import type { InputSource, MergeContext, MergeOptions, MergeResult } from './types';
