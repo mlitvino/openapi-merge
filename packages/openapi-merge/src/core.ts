@@ -1,5 +1,6 @@
 import type { Document as OpenApiV3_0 } from '@scalar/openapi-types/3.0';
-import { MergeContext, MergeResult } from './types';
+import { validate } from './validate.js';
+import { MergeContext, MergeOptions, MergeResult } from './types';
 
 const EMPTY_OUTPUT: OpenApiV3_0 = {
   openapi: '3.0.4',
@@ -10,6 +11,17 @@ const EMPTY_OUTPUT: OpenApiV3_0 = {
   paths: {},
 };
 
-export function mergeCore(ctx: MergeContext): MergeResult {
+const DEFAULT_VERSION_POLICY: MergeOptions['versionPolicy'] = {
+  mode: 'strict',
+  targetVersion: '3.0',
+};
+
+export function mergeCore(ctx: MergeContext, options?: MergeOptions): MergeResult {
+  const versionPolicy = options?.versionPolicy ?? DEFAULT_VERSION_POLICY;
+  const validationError = validate(ctx.rawSpecs, { versionPolicy });
+  if (validationError) {
+    return validationError;
+  }
+
   return { ok: true, output: EMPTY_OUTPUT };
 }

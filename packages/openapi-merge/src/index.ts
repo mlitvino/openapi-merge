@@ -1,9 +1,12 @@
 import { mergeCore } from './core';
 import { err } from './errors';
 import { loadSpecs } from './load';
-import type { InputSource, MergeContext, MergeResult } from './types';
+import type { InputSource, MergeContext, MergeOptions, MergeResult } from './types';
 
-export async function mergeAsync(inputs: InputSource[]): Promise<MergeResult> {
+export async function mergeAsync(
+  inputs: InputSource[],
+  options?: MergeOptions
+): Promise<MergeResult> {
   if (inputs.length === 0) {
     return err('no-inputs', 'You must provide at least one input entity');
   }
@@ -15,12 +18,12 @@ export async function mergeAsync(inputs: InputSource[]): Promise<MergeResult> {
 
   loadSpecs(inputs, ctx);
 
-  const res = mergeCore(ctx);
+  const res = mergeCore(ctx, options);
 
   return res;
 }
 
-export function merge(inputs: InputSource[]): MergeResult {
+export function merge(inputs: InputSource[], options?: MergeOptions): MergeResult {
   if (inputs.length === 0) {
     return err('no-inputs', 'You must provide at least one input entity');
   }
@@ -32,7 +35,7 @@ export function merge(inputs: InputSource[]): MergeResult {
 
   loadSpecs(inputs, ctx);
 
-  const res = mergeCore(ctx);
+  const res = mergeCore(ctx, options);
 
   return res;
 }
