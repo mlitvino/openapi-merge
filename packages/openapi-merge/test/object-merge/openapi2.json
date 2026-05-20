@@ -1,0 +1,19 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Case1 API Two",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/goodbye": {
+      "post": {
+        "summary": "Goodbye",
+        "responses": {
+          "200": {
+            "description": "ok"
+          }
+        }
+      }
+    }
+  }
+}

@@ -13,7 +13,8 @@
     "build": "tsc -p tsconfig.json",
     "clean": "rm -rf dist",
     "lint": "eslint . --ext .ts,.tsx",
-    "test": "tsx test/case1/main.ts"
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -21,6 +22,7 @@
     "@typescript-eslint/parser": "^8.59.4",
     "eslint": "^10.4.0",
     "globals": "^17.6.0",
+    "vitest": "^3.2.4",
     "tsx": "^4.0.0",
     "typescript": "^5.0.0"
   },
