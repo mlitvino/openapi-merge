@@ -13,4 +13,8 @@ const result = merge([
   { input: api2 },
 ]);
 
+if (!result.ok) {
+  console.error(`Error from merge: ${result.error}`);
+}
+
 console.log(result);
