@@ -1,57 +1,42 @@
+import { createContext } from './utils';
 import { mergeCore } from './core';
-import { MergeException, err } from './errors';
+import { err, handleMergeError } from './errors';
 import { loadSpecs, loadSpecsAsync } from './load';
 import type { InputSource, MergeContext, MergeOptions, MergeResult } from './types';
+import { isPromise } from './utils';
+
+function runMerge(
+  inputs: InputSource[],
+  options: MergeOptions | undefined,
+  loader: (inputs: InputSource[], ctx: MergeContext) => void | Promise<void>
+): MergeResult | Promise<MergeResult> {
+  try {
+    if (inputs.length === 0) {
+      return err('no-inputs', 'You must provide at least one input entity');
+    }
+
+    const ctx = createContext();
+    const result = loader(inputs, ctx);
+
+    if (isPromise(result)) {
+      return result
+        .then(() => mergeCore(ctx, options))
+        .catch((error) => handleMergeError(error));
+    }
+
+    return mergeCore(ctx, options);
+  } catch (error) {
+    return handleMergeError(error);
+  }
+}
 
 export async function mergeAsync(
   inputs: InputSource[],
   options?: MergeOptions
 ): Promise<MergeResult> {
-  try {
-    if (inputs.length === 0) {
-      return err('no-inputs', 'You must provide at least one input entity');
-    }
-
-    const ctx: MergeContext = {
-      rawSpecs: [],
-      parsedSpecs: [],
-    };
-
-    await loadSpecsAsync(inputs, ctx);
-
-    const res = mergeCore(ctx, options);
-
-    return res;
-  } catch (error) {
-    if (error instanceof MergeException) {
-      return { ok: false, error: error.error };
-    }
-
-    return err('internal-error', 'Unexpected error.');
-  }
+  return await runMerge(inputs, options, loadSpecsAsync);
 }
 
 export function merge(inputs: InputSource[], options?: MergeOptions): MergeResult {
-  try {
-    if (inputs.length === 0) {
-      return err('no-inputs', 'You must provide at least one input entity');
-    }
-
-    const ctx: MergeContext = {
-      rawSpecs: [],
-      parsedSpecs: [],
-    };
-
-    loadSpecs(inputs, ctx);
-
-    const res = mergeCore(ctx, options);
-
-    return res;
-  } catch (error) {
-    if (error instanceof MergeException) {
-      return { ok: false, error: error.error };
-    }
-
-    return err('internal-error', 'Unexpected error.');
-  }
+  return runMerge(inputs, options, loadSpecs) as MergeResult;
 }
