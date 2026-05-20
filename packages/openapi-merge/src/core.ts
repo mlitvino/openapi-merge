@@ -18,10 +18,7 @@ const DEFAULT_VERSION_POLICY: MergeOptions['versionPolicy'] = {
 
 export function mergeCore(ctx: MergeContext, options?: MergeOptions): MergeResult {
   const versionPolicy = options?.versionPolicy ?? DEFAULT_VERSION_POLICY;
-  const validationError = validate(ctx.rawSpecs, { versionPolicy });
-  if (validationError) {
-    return validationError;
-  }
+  validate(ctx.rawSpecs, { versionPolicy });
 
   return { ok: true, output: EMPTY_OUTPUT };
 }

@@ -1,38 +1,31 @@
-import { err } from './errors.js';
-import type { MergeOptions, MergeResult } from './types';
+import { throwMergeError } from './errors.js';
+import type { MergeOptions } from './types';
 
-export function validate(rawSpecs: unknown[], options?: MergeOptions): MergeResult | null {
-  const versionError = validateVersions(rawSpecs, options?.versionPolicy);
-  if (versionError) {
-    return versionError;
-  }
-
-  return null;
+export function validate(rawSpecs: unknown[], options?: MergeOptions): void {
+  validateVersions(rawSpecs, options?.versionPolicy);
 }
 
 export function validateVersions(
   rawSpecs: unknown[],
   policy: MergeOptions['versionPolicy']
-): MergeResult | null {
+): void {
   if (!policy) {
-    return null;
+    return;
   }
 
   for (const spec of rawSpecs) {
     if (!isRecord(spec)) {
-      return err('invalid-version', 'OpenAPI document must be an object.');
+      throwMergeError('invalid-version', 'OpenAPI document must be an object.');
     }
 
     const version = typeof spec.openapi === 'string' ? spec.openapi : '';
     if (!version.startsWith(`${policy.targetVersion}.`)) {
-      return err(
+      throwMergeError(
         'invalid-version',
         `Unsupported OpenAPI version: ${version || 'unknown'}. Expected ${policy.targetVersion}.x`
       );
     }
   }
-
-  return null;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
