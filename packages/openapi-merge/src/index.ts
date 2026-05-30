@@ -36,6 +36,9 @@ export async function mergeAsync(
   return await runMerge(inputs, options, loadSpecsAsync);
 }
 
-export function merge(inputs: InputSource[], options?: MergeOptions): MergeResult {
+export function merge(
+  inputs: InputSource[],
+  options?: MergeOptions,
+): MergeResult {
   return runMerge(inputs, options, loadSpecs) as MergeResult;
 }

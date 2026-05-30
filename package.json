@@ -7,11 +7,17 @@
   "scripts": {
     "build": "pnpm -r build",
     "dev": "pnpm -r dev",
+    "format": "pnpm dprint fmt",
+    "format:check": "pnpm dprint check",
     "lint": "pnpm --filter openapi-merge lint",
+    "lint:check": "pnpm --filter openapi-merge lint --fix",
     "test": "pnpm --filter openapi-merge test"
   },
   "devDependencies": {
     "@types/node": "^25.9.0",
     "globals": "^17.6.0"
+  },
+  "dependencies": {
+    "dprint": "^0.54.0"
   }
 }

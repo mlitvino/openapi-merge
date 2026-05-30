@@ -13,10 +13,11 @@ const api1 = JSON.parse(readFileSync(api1Path, 'utf8')) as object;
 const objectResult = merge(
   [
     { input: api1 },
-    { input: api2Path }
+    { input: api2Path },
   ],
   {
-  versionPolicy: { mode: 'strict', targetVersion: '3.0' },
-});
+    // versionPolicy: { mode: 'strict', targetVersion: '3.0' },
+  },
+);
 
 console.log('result:', objectResult);

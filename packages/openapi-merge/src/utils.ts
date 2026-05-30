@@ -9,8 +9,8 @@ export function createContext(): MergeContext {
 
 export function isPromise<T>(value: Promise<T> | T): value is Promise<T> {
   return (
-    (typeof value === 'object' || typeof value === 'function') &&
-    value !== null &&
-    typeof (value as Promise<T>).then === 'function'
+    (typeof value === 'object' || typeof value === 'function')
+    && value !== null
+    && typeof (value as Promise<T>).then === 'function'
   );
 }

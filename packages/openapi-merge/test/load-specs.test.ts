@@ -66,7 +66,6 @@ describe('loadSpecsAsync', () => {
 
     expect(ctx.rawSpecs).toHaveLength(1);
     expect((ctx.rawSpecs[0] as { openapi?: string }).openapi).toBe('3.0.3');
-
   });
 
   it('loads mixed inputs (object, file, url)', async () => {
@@ -88,7 +87,7 @@ describe('loadSpecsAsync', () => {
 
     await loadSpecsAsync(
       [{ input: api1 }, { input: api1Path }, { input: 'https://example.com/openapi.json' }],
-      ctx
+      ctx,
     );
 
     expect(ctx.rawSpecs).toHaveLength(3);

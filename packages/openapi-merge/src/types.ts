@@ -16,17 +16,17 @@ export type MergeOptions = {
 };
 
 export type MergeResult =
-  | { ok: true, output: OpenApiV3_0; }
-  | { ok: false, error: MergeError; }
+  | { ok: true; output: OpenApiV3_0 }
+  | { ok: false; error: MergeError };
 
 export type MergeError =
   | { type: 'no-inputs'; message: string }
   | { type: 'invalid-version'; message: string }
   | { type: 'load-failed'; message: string }
   | { type: 'parse-error'; message: string }
-  | { type: 'internal-error'; message: string }
+  | { type: 'internal-error'; message: string };
 
 export type MergeContext = {
-  rawSpecs: unknown[],
+  rawSpecs: unknown[];
   parsedSpecs: OpenApiV3_0[];
-}
+};

@@ -1,6 +1,6 @@
 import js from '@eslint/js';
-import tseslint from 'typescript-eslint';
 import globals from 'globals';
+import tseslint from 'typescript-eslint';
 
 export default [
   js.configs.recommended,
@@ -13,7 +13,7 @@ export default [
       'node_modules/**',
       '*.js',
       'test',
-      'vitest.config.ts'
+      'vitest.config.ts',
     ],
   },
   {
@@ -27,7 +27,6 @@ export default [
       },
     },
     rules: {
-
       '@typescript-eslint/no-unused-vars': ['error', {
         argsIgnorePattern: '^_',
         varsIgnorePattern: '^_',
@@ -40,12 +39,6 @@ export default [
       'arrow-body-style': ['warn', 'as-needed'],
       'no-duplicate-imports': 'error',
       '@typescript-eslint/consistent-type-definitions': 'off',
-
-      'semi': ['error', 'always'],
-      'quotes': ['error', 'single', { avoidEscape: true }],
-      'comma-dangle': ['error', 'always-multiline'],
-      'indent': ['error', 2, { SwitchCase: 1 }],
-      'max-len': ['error', { code: 100, ignoreUrls: true, ignoreStrings: true }],
     },
   },
 ];
