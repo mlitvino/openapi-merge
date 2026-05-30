@@ -10,12 +10,15 @@
     "format": "pnpm dprint fmt",
     "format:check": "pnpm dprint check",
     "lint": "pnpm --filter openapi-merge lint",
-    "lint:check": "pnpm --filter openapi-merge lint --fix",
-    "test": "pnpm --filter openapi-merge test"
+    "lint:fix": "pnpm --filter openapi-merge lint --fix",
+    "lint:staged": "pnpm lint:fix && pnpm format",
+    "test": "pnpm --filter openapi-merge test",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@types/node": "^25.9.0",
-    "globals": "^17.6.0"
+    "globals": "^17.6.0",
+    "husky": "^9.1.7"
   },
   "dependencies": {
     "dprint": "^0.54.0"
