@@ -1,4 +1,4 @@
-import { MergeContext } from "./types";
+import { MergeContext } from './types';
 
 export function createContext(): MergeContext {
   return {

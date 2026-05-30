@@ -62,11 +62,15 @@ function loadFromFile(filepath: string): unknown {
 function parseSpec(text: string): unknown {
   try {
     return JSON.parse(text) as unknown;
-  } catch { }
+  } catch {
+    // continue
+  }
 
   try {
     return parseYaml(text) as unknown;
-  } catch { }
+  } catch {
+    // continue
+  }
 
   throwMergeError('parse-error', 'Failed to parse spec file.');
 }

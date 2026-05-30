@@ -12,7 +12,7 @@ const EMPTY_OUTPUT: OpenApiV3_0 = {
 };
 
 const DEFAULT_VERSION_POLICY: MergeOptions['versionPolicy'] = {
-  mode: 'skip'
+  mode: 'skip',
 };
 
 export function mergeCore(ctx: MergeContext, options?: MergeOptions): MergeResult {
@@ -22,7 +22,7 @@ export function mergeCore(ctx: MergeContext, options?: MergeOptions): MergeResul
   const parsedSpecs: OpenApiV3_0[] = ctx.parsedSpecs;
   void parsedSpecs;
 
-  console.log('PARSED', ctx.parsedSpecs)
+  console.log('PARSED', ctx.parsedSpecs);
 
   return { ok: true, output: EMPTY_OUTPUT };
 }

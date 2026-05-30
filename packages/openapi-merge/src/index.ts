@@ -1,14 +1,13 @@
-import { createContext } from './utils';
+import { createContext, isPromise } from './utils';
 import { mergeCore } from './core/core';
 import { err, handleMergeError } from './errors';
 import { loadSpecs, loadSpecsAsync } from './load';
 import type { InputSource, MergeContext, MergeOptions, MergeResult } from './types';
-import { isPromise } from './utils';
 
 function runMerge(
   inputs: InputSource[],
   options: MergeOptions | undefined,
-  loader: (inputs: InputSource[], ctx: MergeContext) => void | Promise<void>
+  loader: (inputs: InputSource[], ctx: MergeContext) => void | Promise<void>,
 ): MergeResult | Promise<MergeResult> {
   try {
     if (inputs.length === 0) {
@@ -32,7 +31,7 @@ function runMerge(
 
 export async function mergeAsync(
   inputs: InputSource[],
-  options?: MergeOptions
+  options?: MergeOptions,
 ): Promise<MergeResult> {
   return await runMerge(inputs, options, loadSpecsAsync);
 }

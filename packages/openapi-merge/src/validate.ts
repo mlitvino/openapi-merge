@@ -20,7 +20,7 @@ export function validateVersions(
     if (!isOpenApiV3_0(spec)) {
       throwMergeError(
         'invalid-version',
-        `Unsupported or invalid OpenAPI v${policy.targetVersion} document.`
+        `Unsupported or invalid OpenAPI v${policy.targetVersion} document.`,
       );
     }
 
