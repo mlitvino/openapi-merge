@@ -28,10 +28,17 @@ export function validateVersions(
   }
 }
 
-function isOpenApiV3_0(_value: unknown): _value is OpenApiV3_0 {
-  return true;
+function isOpenApiV3_0(value: unknown): value is OpenApiV3_0 {
+  if (!isRecord(value))
+    return false;
+
+  if (typeof value.openapi === 'string' && value.openapi.startsWith('3.0')) {
+    return true;
+  }
+
+  return false;
 }
 
-function _isRecord(value: unknown): value is Record<string, unknown> {
+function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
