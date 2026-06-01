@@ -24,6 +24,7 @@ export type MergeError =
   | { type: 'invalid-version'; message: string }
   | { type: 'load-failed'; message: string }
   | { type: 'parse-error'; message: string }
+  | { type: 'duplicate-path'; message: string }
   | { type: 'internal-error'; message: string };
 
 export type MergeContext = {

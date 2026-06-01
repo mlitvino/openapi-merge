@@ -16,7 +16,7 @@ const objectResult = merge(
     { input: api2Path },
   ],
   {
-    // versionPolicy: { mode: 'strict', targetVersion: '3.0' },
+    versionPolicy: { mode: 'strict', targetVersion: '3.0' },
   },
 );
 

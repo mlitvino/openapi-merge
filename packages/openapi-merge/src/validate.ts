@@ -29,8 +29,9 @@ export function validateVersions(
 }
 
 function isOpenApiV3_0(value: unknown): value is OpenApiV3_0 {
-  if (!isRecord(value))
+  if (!isRecord(value)) {
     return false;
+  }
 
   if (typeof value.openapi === 'string' && value.openapi.startsWith('3.0')) {
     return true;
