@@ -1,8 +1,7 @@
-import type { Document as OpenApiV3_0, PathsObject } from '@scalar/openapi-types/3.0';
+import type { Document as OpenApiV3_0 } from '@scalar/openapi-types/3.0';
 import { validate } from '../validate.js';
 import { MergeContext, MergeOptions, MergeResult } from '../types.js';
-
-export type ComponentsMap = Record<string, Record<string, unknown>>;
+import { mergePaths, mergeComponents } from './merge-utils.js';
 
 const DEFAULT_VERSION_POLICY: MergeOptions['versionPolicy'] = {
   mode: 'skip',
@@ -27,56 +26,14 @@ export function mergeCore(ctx: MergeContext, options?: MergeOptions): MergeResul
   base.components = structuredClone(base.components ?? {});
   base.paths = structuredClone(base.paths ?? {});
 
-  const mergedComponents = (base.components ?? {}) as ComponentsMap;
-  const mergedPaths: Record<string, unknown> = structuredClone(base.paths ?? {});
+  let mergedPaths = base.paths;
+  let mergedComponents = base.components ?? {};
 
   for (let i = 1; i < specs.length; i++) {
     const spec = specs[i];
 
-    const incomingPaths: Record<string, unknown> = spec.paths ?? {};
-    for (const [pathKey, pathItem] of Object.entries(incomingPaths)) {
-      if (pathKey in mergedPaths) {
-        const baseItem = mergedPaths[pathKey] as Record<string, unknown>;
-        const incomingItem = pathItem as Record<string, unknown>;
-
-        for (const [method, operation] of Object.entries(incomingItem)) {
-          if (typeof method === 'string' && method in baseItem) {
-            return {
-              ok: false,
-              error: {
-                type: 'duplicate-path',
-                message: `Conflicting path: ${pathKey} method ${method}`,
-              },
-            };
-          }
-          baseItem[method] = structuredClone(operation);
-        }
-      } else {
-        mergedPaths[pathKey] = structuredClone(pathItem);
-      }
-    }
-
-    const incomingComponents = (spec.components ?? {}) as ComponentsMap;
-    for (const [compKey, compMap] of Object.entries(incomingComponents)) {
-      if (!compMap || typeof compMap !== 'object') continue;
-      if (!mergedComponents[compKey]) {
-        mergedComponents[compKey] = {};
-      }
-      for (const [name, obj] of Object.entries(compMap)) {
-        if (name in (mergedComponents[compKey] || {})) {
-          let attempt = 2;
-          let candidate = `${name}_v${attempt}`;
-          const target = mergedComponents[compKey];
-          while (candidate in target) {
-            attempt++;
-            candidate = `${name}_v${attempt}`;
-          }
-          target[candidate] = structuredClone(obj);
-        } else {
-          mergedComponents[compKey][name] = structuredClone(obj);
-        }
-      }
-    }
+    mergedPaths = mergePaths(mergedPaths, spec.paths ?? {});
+    mergedComponents = mergeComponents(mergedComponents, spec.components ?? {});
 
     if (spec.info) {
       base.info = structuredClone(spec.info);
@@ -95,7 +52,7 @@ export function mergeCore(ctx: MergeContext, options?: MergeOptions): MergeResul
     }
   }
 
-  base.paths = mergedPaths as PathsObject;
+  base.paths = mergedPaths;
   base.components = mergedComponents;
 
   return { ok: true, output: base };
