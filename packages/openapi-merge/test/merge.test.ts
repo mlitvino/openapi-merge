@@ -31,6 +31,7 @@ describe('merge (MVP)', () => {
           input: {
             openapi: '3.0.3',
             info: { title: 'API Two', version: '2.0.0' },
+            servers: [{ url: 'https://api.example.com' }],
             paths: {
               '/goodbye': {
                 post: {
@@ -54,8 +55,10 @@ describe('merge (MVP)', () => {
       expect(paths['/goodbye']).toBeDefined();
 
       const info = output.info as { title: string; version: string };
-      expect(info.title).toBe('API Two');
-      expect(info.version).toBe('2.0.0');
+      expect(info.title).toBe('API One');
+      expect(info.version).toBe('1.0.0');
+
+      expect(output.servers).toEqual([{ url: 'https://api.example.com' }]);
     }
   });
 

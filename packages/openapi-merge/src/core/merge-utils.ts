@@ -1,11 +1,11 @@
-import type { PathsObject, ComponentsObject } from '@scalar/openapi-types/3.0';
+import type { ComponentsObject, PathsObject } from '@scalar/openapi-types/3.0';
 import { throwMergeError } from '../errors.js';
 
 export type ComponentsMap = Record<string, Record<string, unknown>>;
 
 export function mergePaths(
   basePaths: PathsObject,
-  specPaths: PathsObject
+  specPaths: PathsObject,
 ): PathsObject {
   const mergedPaths = structuredClone(basePaths);
 
@@ -18,7 +18,7 @@ export function mergePaths(
         if (typeof method === 'string' && method in baseItem) {
           throwMergeError(
             'duplicate-path',
-            `Conflicting path: ${pathKey} method ${method}`
+            `Conflicting path: ${pathKey} method ${method}`,
           );
         }
 
@@ -34,7 +34,7 @@ export function mergePaths(
 
 export function mergeComponents(
   baseComponents: ComponentsObject,
-  incomingComponents: ComponentsObject
+  incomingComponents: ComponentsObject,
 ): ComponentsMap {
   const mergedComponents = structuredClone(baseComponents) as ComponentsMap;
 

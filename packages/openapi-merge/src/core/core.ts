@@ -1,7 +1,7 @@
 import type { Document as OpenApiV3_0 } from '@scalar/openapi-types/3.0';
 import { validate } from '../validate.js';
 import { MergeContext, MergeOptions, MergeResult } from '../types.js';
-import { mergePaths, mergeComponents } from './merge-utils.js';
+import { mergeComponents, mergePaths } from './merge-utils.js';
 
 const DEFAULT_VERSION_POLICY: MergeOptions['versionPolicy'] = {
   mode: 'skip',
@@ -35,19 +35,19 @@ export function mergeCore(ctx: MergeContext, options?: MergeOptions): MergeResul
     mergedPaths = mergePaths(mergedPaths, spec.paths ?? {});
     mergedComponents = mergeComponents(mergedComponents, spec.components ?? {});
 
-    if (spec.info) {
+    if (base.info == null && spec.info != null) {
       base.info = structuredClone(spec.info);
     }
-    if (spec.servers) {
+    if (base.servers == null && spec.servers != null) {
       base.servers = structuredClone(spec.servers);
     }
-    if (spec.security) {
+    if (base.security == null && spec.security != null) {
       base.security = structuredClone(spec.security);
     }
-    if (spec.tags) {
+    if (base.tags == null && spec.tags != null) {
       base.tags = structuredClone(spec.tags);
     }
-    if (spec.externalDocs) {
+    if (base.externalDocs == null && spec.externalDocs != null) {
       base.externalDocs = structuredClone(spec.externalDocs);
     }
   }

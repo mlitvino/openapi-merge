@@ -20,4 +20,4 @@ const objectResult = merge(
   },
 );
 
-console.log('result:', objectResult);
+console.log('result:', JSON.stringify(objectResult, null, 2));
