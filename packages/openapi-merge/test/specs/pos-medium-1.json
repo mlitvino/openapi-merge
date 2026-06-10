@@ -1,0 +1,316 @@
+{
+	"openapi": "3.0.3",
+	"info": {
+		"title": "Medium API One",
+		"version": "1.0.0",
+		"description": "A moderately sized OpenAPI document for merge testing."
+	},
+	"servers": [
+		{
+			"url": "https://api.example.com/v1",
+			"description": "Primary production server"
+		}
+	],
+	"tags": [
+		{
+			"name": "users",
+			"description": "User management operations"
+		},
+		{
+			"name": "admin",
+			"description": "Administrative operations"
+		}
+	],
+	"paths": {
+		"/users": {
+			"get": {
+				"tags": ["users"],
+				"summary": "List users",
+				"operationId": "listUsers",
+				"parameters": [
+					{
+						"$ref": "#/components/parameters/PageParam"
+					},
+					{
+						"$ref": "#/components/parameters/PageSizeParam"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "A paginated list of users",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UserListResponse"
+								}
+							}
+						},
+						"headers": {
+							"X-Total-Count": {
+								"$ref": "#/components/headers/TotalCountHeader"
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"tags": ["admin", "users"],
+				"summary": "Create user",
+				"operationId": "createUser",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateUserRequest"
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "User created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/User"
+								}
+							}
+						}
+					},
+					"400": {
+						"$ref": "#/components/responses/BadRequestError"
+					}
+				}
+			}
+		},
+		"/users/{userId}": {
+			"get": {
+				"tags": ["users"],
+				"summary": "Get user by id",
+				"operationId": "getUserById",
+				"parameters": [
+					{
+						"$ref": "#/components/parameters/UserIdParam"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "User details",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/User"
+								}
+							}
+						}
+					},
+					"404": {
+						"$ref": "#/components/responses/NotFoundError"
+					}
+				}
+			},
+			"patch": {
+				"tags": ["admin", "users"],
+				"summary": "Update user status",
+				"operationId": "updateUserStatus",
+				"parameters": [
+					{
+						"$ref": "#/components/parameters/UserIdParam"
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateUserStatusRequest"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Updated user",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/User"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/roles": {
+			"get": {
+				"tags": ["admin"],
+				"summary": "List roles",
+				"operationId": "listRoles",
+				"responses": {
+					"200": {
+						"description": "Role collection",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RoleListResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"User": {
+				"type": "object",
+				"required": ["id", "email", "status"],
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid"
+					},
+					"email": {
+						"type": "string",
+						"format": "email"
+					},
+					"status": {
+						"type": "string",
+						"enum": ["active", "inactive", "pending"]
+					},
+					"profile": {
+						"$ref": "#/components/schemas/UserProfile"
+					}
+				}
+			},
+			"UserProfile": {
+				"type": "object",
+				"properties": {
+					"firstName": { "type": "string" },
+					"lastName": { "type": "string" },
+					"displayName": { "type": "string" }
+				}
+			},
+			"UserListResponse": {
+				"type": "object",
+				"required": ["items"],
+				"properties": {
+					"items": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/User"
+						}
+					},
+					"nextCursor": { "type": "string", "nullable": true }
+				}
+			},
+			"CreateUserRequest": {
+				"type": "object",
+				"required": ["email"],
+				"properties": {
+					"email": { "type": "string", "format": "email" },
+					"firstName": { "type": "string" },
+					"lastName": { "type": "string" }
+				}
+			},
+			"UpdateUserStatusRequest": {
+				"type": "object",
+				"required": ["status"],
+				"properties": {
+					"status": {
+						"type": "string",
+						"enum": ["active", "inactive", "pending"]
+					}
+				}
+			},
+			"Role": {
+				"type": "object",
+				"required": ["id", "name"],
+				"properties": {
+					"id": { "type": "string", "format": "uuid" },
+					"name": { "type": "string" },
+					"permissions": {
+						"type": "array",
+						"items": { "type": "string" }
+					}
+				}
+			},
+			"RoleListResponse": {
+				"type": "object",
+				"properties": {
+					"items": {
+						"type": "array",
+						"items": { "$ref": "#/components/schemas/Role" }
+					}
+				}
+			}
+		},
+		"parameters": {
+			"PageParam": {
+				"name": "page",
+				"in": "query",
+				"required": false,
+				"schema": { "type": "integer", "minimum": 1, "default": 1 }
+			},
+			"PageSizeParam": {
+				"name": "pageSize",
+				"in": "query",
+				"required": false,
+				"schema": { "type": "integer", "minimum": 1, "maximum": 100, "default": 20 }
+			},
+			"UserIdParam": {
+				"name": "userId",
+				"in": "path",
+				"required": true,
+				"schema": { "type": "string", "format": "uuid" }
+			}
+		},
+		"responses": {
+			"BadRequestError": {
+				"description": "Invalid request",
+				"content": {
+					"application/json": {
+						"schema": {
+							"$ref": "#/components/schemas/ErrorResponse"
+						}
+					}
+				}
+			},
+			"NotFoundError": {
+				"description": "Resource not found",
+				"content": {
+					"application/json": {
+						"schema": {
+							"$ref": "#/components/schemas/ErrorResponse"
+						}
+					}
+				}
+			}
+		},
+		"headers": {
+			"TotalCountHeader": {
+				"description": "Total number of records",
+				"schema": { "type": "integer", "minimum": 0 }
+			}
+		},
+		"securitySchemes": {
+			"bearerAuth": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "JWT"
+			}
+		}
+	},
+	"security": [
+		{
+			"bearerAuth": []
+		}
+	],
+	"externalDocs": {
+		"description": "API docs",
+		"url": "https://docs.example.com/medium-one"
+	}
+}
