@@ -13,6 +13,7 @@
     "lint:fix": "pnpm --filter openapi-merge lint --fix",
     "lint:staged": "pnpm lint:fix && pnpm format",
     "test": "pnpm --filter openapi-merge test",
+    "typecheck": "pnpm --filter openapi-merge typecheck",
     "prepare": "husky"
   },
   "devDependencies": {

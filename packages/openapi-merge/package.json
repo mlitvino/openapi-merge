@@ -15,7 +15,8 @@
     "lint": "eslint . --ext .ts,.tsx",
     "test": "vitest run",
     "test:watch": "vitest",
-    "e2e": "tsx test/e2e/main.ts"
+    "e2e": "tsx test/e2e/main.ts",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
