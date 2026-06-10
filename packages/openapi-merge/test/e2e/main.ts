@@ -5,8 +5,8 @@ import { fileURLToPath } from 'node:url';
 import { merge } from '../../src/index.js';
 
 const caseDir = resolve(dirname(fileURLToPath(import.meta.url)));
-const api1Path = resolve(caseDir, '../specs/openapi1.json');
-const api2Path = resolve(caseDir, '../specs/openapi2.json');
+const api1Path = resolve(caseDir, '../specs/simple-1.json');
+const api2Path = resolve(caseDir, '../specs/simple-2.json');
 
 const api1 = JSON.parse(readFileSync(api1Path, 'utf8')) as object;
 

@@ -8,8 +8,8 @@ import { loadSpecs, loadSpecsAsync } from '../src/load.js';
 import type { MergeContext, OpenApiDocument } from '../src/types.js';
 
 const caseDir = resolve(dirname(fileURLToPath(import.meta.url)), 'specs');
-const api1Path = resolve(caseDir, 'openapi1.json');
-const api2Path = resolve(caseDir, 'openapi2.json');
+const api1Path = resolve(caseDir, 'simple-1.json');
+const api2Path = resolve(caseDir, 'simple-2.json');
 
 function readJson(name: string): OpenApiDocument {
   return JSON.parse(readFileSync(resolve(caseDir, name), 'utf8')) as OpenApiDocument;
@@ -22,8 +22,8 @@ function createContext(): MergeContext {
 describe('loadSpecs', () => {
   it('loads object inputs', () => {
     const ctx = createContext();
-    const api1 = readJson('openapi1.json');
-    const api2 = readJson('openapi2.json');
+    const api1 = readJson('simple-1.json');
+    const api2 = readJson('simple-2.json');
 
     loadSpecs([{ input: api1 }, { input: api2 }], ctx);
 
@@ -70,7 +70,7 @@ describe('loadSpecsAsync', () => {
 
   it('loads mixed inputs (object, file, url)', async () => {
     const ctx = createContext();
-    const api1 = readJson('openapi1.json');
+    const api1 = readJson('simple-1.json');
     const mockResponse = {
       ok: true,
       status: 200,
