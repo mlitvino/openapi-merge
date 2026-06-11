@@ -7,9 +7,10 @@ Merge multiple OpenAPI 3.0 documents into a single deterministic output.
 - **Multiple input sources** — URL, file path, or in-memory object
 - **Sync & async APIs** — `merge()` and `mergeAsync()`
 - **Version validation** — Strict mode rejects non-3.0 documents
-- **Path merging** — Combine paths from multiple specs; conflicts by method
-- **Component merging** — Schemas, parameters, responses, etc. with automatic suffixing on name conflicts
-- **Top-level field replace** — `info`, `servers`, `security`, `tags` from later specs override earlier ones
+- **Path merging** — Combine paths from multiple specs; conflicts by method fail fast
+- **Component merging** — Components are merged with suffixing for name conflicts
+- **Top-level fields** — `info`, `servers`, `security`, `tags`, and `externalDocs` are taken from the first available spec
+- **Deterministic output** — Input order controls merge order
 
 ## Install
 
@@ -36,6 +37,16 @@ if (result.ok) {
   console.error(result.error);
 }
 ```
+
+## Development
+
+From the workspace root:
+
+- `pnpm test` — run package tests
+- `pnpm e2e` — run the e2e script
+- `pnpm build` — build the package
+- `pnpm typecheck` — run TypeScript checks
+- `pnpm lint` — run ESLint
 
 ## License
 
