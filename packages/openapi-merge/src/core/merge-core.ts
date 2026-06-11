@@ -1,7 +1,7 @@
 import type { Document as OpenApiV3_0 } from '@scalar/openapi-types/3.0';
 import { validate } from '../validate.js';
 import { MergeContext, MergeOptions, MergeResult } from '../types.js';
-import { mergeComponents, mergePaths } from './merge-utils.js';
+import { mergeComponents, mergePaths } from './merge-paths.js';
 
 const DEFAULT_VERSION_POLICY: MergeOptions['versionPolicy'] = {
   mode: 'skip',
