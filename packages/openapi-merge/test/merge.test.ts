@@ -145,7 +145,7 @@ describe('merge (MVP)', () => {
     }
   });
 
-  it('merges components with conflict suffixing', () => {
+  it('errors on conflicting components', () => {
     const result = merge(
       [
         {
@@ -177,16 +177,9 @@ describe('merge (MVP)', () => {
       { versionPolicy: { mode: 'skip' } },
     );
 
-    expect(result.ok).toBe(true);
-    if (result.ok) {
-      const comps = (result.output as Record<string, unknown>).components as Record<
-        string,
-        Record<string, unknown>
-      >;
-      const schemas = comps.schemas;
-      expect(schemas.User).toBeDefined();
-      expect(schemas.User_v2).toBeDefined();
-      expect(schemas.Post).toBeDefined();
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.error.type).toBe('component-conflict');
     }
   });
 
@@ -283,9 +276,10 @@ describe('merge (MVP)', () => {
       expect(components.responses.BadRequestError.content['application/json'].schema.$ref).toBe(
         '#/components/schemas/ErrorResponse',
       );
-      expect(components.responses.NotFoundError.content['application/json'].schema.$ref).toBe(
-        '#/components/schemas/ErrorResponse',
-      );
+      expect(components.responses.ProjectNotFoundError.content['application/json'].schema.$ref)
+        .toBe(
+          '#/components/schemas/ErrorResponse',
+        );
       expect(components.headers.TotalCountHeader.schema.minimum).toBe(0);
       expect(components.securitySchemes.bearerAuth.scheme).toBe('bearer');
       expect(components.securitySchemes.apiKeyAuth.name).toBe('X-API-Key');

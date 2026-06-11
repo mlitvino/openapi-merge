@@ -99,7 +99,7 @@
 						}
 					},
 					"404": {
-						"$ref": "#/components/responses/NotFoundError"
+						"$ref": "#/components/responses/ProjectNotFoundError"
 					}
 				}
 			},
@@ -265,7 +265,7 @@
 			}
 		},
 		"responses": {
-			"NotFoundError": {
+			"ProjectNotFoundError": {
 				"description": "Resource not found",
 				"content": {
 					"application/json": {

@@ -8,7 +8,7 @@ Merge multiple OpenAPI 3.0 documents into a single deterministic output.
 - **Sync & async APIs** — `merge()` and `mergeAsync()`
 - **Version validation** — Strict mode rejects non-3.0 documents
 - **Path merging** — Combine paths from multiple specs; conflicts by method fail fast
-- **Component merging** — Components are merged with suffixing for name conflicts
+- **Component merging** — Components are merged and name conflicts fail fast
 - **Top-level fields** — `info`, `servers`, `security`, `tags`, and `externalDocs` are taken from the first available spec
 - **Deterministic output** — Input order controls merge order
 

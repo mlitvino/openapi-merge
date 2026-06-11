@@ -47,18 +47,13 @@ export function mergeComponents(
     const target = mergedComponents[compKey];
     for (const [name, obj] of Object.entries(compMap)) {
       if (name in target) {
-        let attempt = 2;
-        let candidate = `${name}_v${attempt}`;
-
-        while (candidate in target) {
-          attempt += 1;
-          candidate = `${name}_v${attempt}`;
-        }
-
-        target[candidate] = structuredClone(obj);
-      } else {
-        target[name] = structuredClone(obj);
+        throwMergeError(
+          'component-conflict',
+          `Conflicting component: ${compKey} ${name}`,
+        );
       }
+
+      target[name] = structuredClone(obj);
     }
   }
 
