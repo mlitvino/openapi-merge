@@ -11,9 +11,31 @@ export type VersionPolicy = {
   mode: 'skip';
 };
 
+export type PathPolicy = { mode: 'error' };
+
+export type ComponentPolicy = { mode: 'error' };
+
 export type MergeOptions = {
   versionPolicy?: VersionPolicy;
+  pathPolicy?: PathPolicy;
+  componentPolicy?: ComponentPolicy;
 };
+
+export type ResolvedMergeOptions = Required<MergeOptions>;
+
+export const DEFAULT_MERGE_OPTIONS: ResolvedMergeOptions = {
+  versionPolicy: { mode: 'skip' },
+  pathPolicy: { mode: 'error' },
+  componentPolicy: { mode: 'error' },
+};
+
+export function validateOptions(options?: MergeOptions): ResolvedMergeOptions {
+  return {
+    versionPolicy: options?.versionPolicy ?? DEFAULT_MERGE_OPTIONS.versionPolicy,
+    pathPolicy: options?.pathPolicy ?? DEFAULT_MERGE_OPTIONS.pathPolicy,
+    componentPolicy: options?.componentPolicy ?? DEFAULT_MERGE_OPTIONS.componentPolicy,
+  };
+}
 
 export type MergeResult =
   | { ok: true; output: OpenApiV3_0 }
@@ -25,7 +47,7 @@ export type MergeError =
   | { type: 'load-failed'; message: string }
   | { type: 'parse-error'; message: string }
   | { type: 'duplicate-path'; message: string }
-  | { type: 'component-conflict'; message: string }
+  | { type: 'duplicate-component'; message: string }
   | { type: 'internal-error'; message: string };
 
 export type MergeContext = {

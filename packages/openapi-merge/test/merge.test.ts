@@ -179,7 +179,7 @@ describe('merge (MVP)', () => {
 
     expect(result.ok).toBe(false);
     if (!result.ok) {
-      expect(result.error.type).toBe('component-conflict');
+      expect(result.error.type).toBe('duplicate-component');
     }
   });
 

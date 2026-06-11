@@ -1,16 +1,12 @@
 import type { Document as OpenApiV3_0 } from '@scalar/openapi-types/3.0';
 import { validate } from '../validate.js';
-import { MergeContext, MergeOptions, MergeResult } from '../types.js';
+import { MergeContext, MergeOptions, MergeResult, validateOptions } from '../types.js';
 import { mergeComponents, mergePaths } from './merge-paths.js';
 
-const DEFAULT_VERSION_POLICY: MergeOptions['versionPolicy'] = {
-  mode: 'skip',
-};
+export function mergeCore(ctx: MergeContext, inputOptions?: MergeOptions): MergeResult {
+  const options = validateOptions(inputOptions);
 
-export function mergeCore(ctx: MergeContext, options?: MergeOptions): MergeResult {
-  const versionPolicy = options?.versionPolicy ?? DEFAULT_VERSION_POLICY;
-
-  validate(ctx, { versionPolicy });
+  validate(ctx, { versionPolicy: options.versionPolicy });
 
   const specs: OpenApiV3_0[] = ctx.parsedSpecs;
 
@@ -32,8 +28,16 @@ export function mergeCore(ctx: MergeContext, options?: MergeOptions): MergeResul
   for (let i = 1; i < specs.length; i++) {
     const spec = specs[i];
 
-    mergedPaths = mergePaths(mergedPaths, spec.paths ?? {});
-    mergedComponents = mergeComponents(mergedComponents, spec.components ?? {});
+    mergedPaths = mergePaths(
+      mergedPaths,
+      spec.paths ?? {},
+      options.pathPolicy,
+    );
+    mergedComponents = mergeComponents(
+      mergedComponents,
+      spec.components ?? {},
+      options.componentPolicy,
+    );
 
     if (base.info == null && spec.info != null) {
       base.info = structuredClone(spec.info);

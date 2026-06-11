@@ -1,11 +1,13 @@
 import type { ComponentsObject, PathsObject } from '@scalar/openapi-types/3.0';
 import { throwMergeError } from '../errors.js';
+import type { ComponentPolicy, PathPolicy } from '../types.js';
 
 export type ComponentsMap = Record<string, Record<string, unknown>>;
 
 export function mergePaths(
   basePaths: PathsObject,
   specPaths: PathsObject,
+  policy: PathPolicy,
 ): PathsObject {
   const mergedPaths = structuredClone(basePaths);
 
@@ -15,14 +17,7 @@ export function mergePaths(
       const incomingItem = pathItem as Record<string, unknown>;
 
       for (const [method, operation] of Object.entries(incomingItem)) {
-        if (typeof method === 'string' && method in baseItem) {
-          throwMergeError(
-            'duplicate-path',
-            `Conflicting path: ${pathKey} method ${method}`,
-          );
-        }
-
-        baseItem[method] = structuredClone(operation);
+        setEntry(baseItem, method, operation, makePathConflictHandler(policy, pathKey, method));
       }
     } else {
       mergedPaths[pathKey] = structuredClone(pathItem);
@@ -34,11 +29,12 @@ export function mergePaths(
 
 export function mergeComponents(
   baseComponents: ComponentsObject,
-  incomingComponents: ComponentsObject,
+  specComponents: ComponentsObject,
+  policy: ComponentPolicy,
 ): ComponentsMap {
   const mergedComponents = structuredClone(baseComponents) as ComponentsMap;
 
-  for (const [compKey, compMap] of Object.entries(incomingComponents)) {
+  for (const [compKey, compMap] of Object.entries(specComponents)) {
     if (!compMap || typeof compMap !== 'object') continue;
     if (!mergedComponents[compKey]) {
       mergedComponents[compKey] = {};
@@ -46,16 +42,48 @@ export function mergeComponents(
 
     const target = mergedComponents[compKey];
     for (const [name, obj] of Object.entries(compMap)) {
-      if (name in target) {
-        throwMergeError(
-          'component-conflict',
-          `Conflicting component: ${compKey} ${name}`,
-        );
-      }
-
-      target[name] = structuredClone(obj);
+      setEntry(target, name, obj, makeComponentConflictHandler(policy, compKey, name));
     }
   }
 
   return mergedComponents;
+}
+
+function setEntry(
+  target: Record<string, unknown>,
+  key: string,
+  value: unknown,
+  onConflict: () => void,
+): void {
+  if (key in target) {
+    onConflict();
+    return;
+  }
+  target[key] = structuredClone(value);
+}
+
+function makePathConflictHandler(
+  policy: PathPolicy,
+  pathKey: string,
+  method: string,
+): () => void {
+  switch (policy.mode) {
+    case 'error':
+      return () => {
+        throwMergeError('duplicate-path', `Conflicting path: ${pathKey} method ${method}`);
+      };
+  }
+}
+
+function makeComponentConflictHandler(
+  policy: ComponentPolicy,
+  compKey: string,
+  name: string,
+): () => void {
+  switch (policy.mode) {
+    case 'error':
+      return () => {
+        throwMergeError('duplicate-component', `Conflicting component: ${compKey} ${name}`);
+      };
+  }
 }
