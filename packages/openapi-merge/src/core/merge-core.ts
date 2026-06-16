@@ -1,6 +1,7 @@
 import type { Document as OpenApiV3_0 } from '@scalar/openapi-types/3.0';
 import { validate } from '../validate.js';
 import { MergeContext, MergeOptions, MergeResult, validateOptions } from '../types.js';
+import { filterPaths } from './filter-paths.js';
 import { mergeComponents, mergePaths } from './merge-paths.js';
 
 export function mergeCore(ctx: MergeContext, inputOptions?: MergeOptions): MergeResult {
@@ -22,7 +23,7 @@ export function mergeCore(ctx: MergeContext, inputOptions?: MergeOptions): Merge
   base.components = structuredClone(base.components ?? {});
   base.paths = structuredClone(base.paths ?? {});
 
-  let mergedPaths = base.paths;
+  let mergedPaths = filterPaths(base.paths, options.pathFilter);
   let mergedComponents = base.components ?? {};
 
   for (let i = 1; i < specs.length; i++) {
@@ -30,7 +31,7 @@ export function mergeCore(ctx: MergeContext, inputOptions?: MergeOptions): Merge
 
     mergedPaths = mergePaths(
       mergedPaths,
-      spec.paths ?? {},
+      filterPaths(spec.paths ?? {}, options.pathFilter),
       options.pathPolicy,
     );
     mergedComponents = mergeComponents(

@@ -15,10 +15,16 @@ export type PathPolicy = { mode: 'error' };
 
 export type ComponentPolicy = { mode: 'error' };
 
+export type PathFilter = {
+  include?: string[];
+  exclude?: string[];
+};
+
 export type MergeOptions = {
   versionPolicy?: VersionPolicy;
   pathPolicy?: PathPolicy;
   componentPolicy?: ComponentPolicy;
+  pathFilter?: PathFilter;
 };
 
 export type ResolvedMergeOptions = Required<MergeOptions>;
@@ -27,6 +33,7 @@ export const DEFAULT_MERGE_OPTIONS: ResolvedMergeOptions = {
   versionPolicy: { mode: 'skip' },
   pathPolicy: { mode: 'error' },
   componentPolicy: { mode: 'error' },
+  pathFilter: {},
 };
 
 export function validateOptions(options?: MergeOptions): ResolvedMergeOptions {
@@ -34,6 +41,7 @@ export function validateOptions(options?: MergeOptions): ResolvedMergeOptions {
     versionPolicy: options?.versionPolicy ?? DEFAULT_MERGE_OPTIONS.versionPolicy,
     pathPolicy: options?.pathPolicy ?? DEFAULT_MERGE_OPTIONS.pathPolicy,
     componentPolicy: options?.componentPolicy ?? DEFAULT_MERGE_OPTIONS.componentPolicy,
+    pathFilter: options?.pathFilter ?? DEFAULT_MERGE_OPTIONS.pathFilter,
   };
 }
 
