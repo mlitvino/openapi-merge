@@ -1,15 +1,16 @@
-import type { Document as OpenApiV3_0 } from '@scalar/openapi-types/3.0';
+import type { Document as OpenApiV3_0, PathsObject } from '@scalar/openapi-types/3.0';
 import { validate } from '../validate.js';
-import { MergeContext, MergeOptions, MergeResult, validateOptions } from '../types.js';
+import { MergeContext, MergeOptions, MergeResult, ResolvedMergeOptions, validateOptions } from '../types.js';
 import { filterPaths } from './filter-paths.js';
 import { mergeComponents, mergePaths } from './merge-paths.js';
+import { renamePaths } from './rename-paths.js';
 
 export function mergeCore(ctx: MergeContext, inputOptions?: MergeOptions): MergeResult {
   const options = validateOptions(inputOptions);
 
   validate(ctx, { versionPolicy: options.versionPolicy });
 
-  const specs: OpenApiV3_0[] = ctx.parsedSpecs;
+  const specs = ctx.parsedSpecs;
 
   if (specs.length === 0) {
     return {
@@ -19,19 +20,18 @@ export function mergeCore(ctx: MergeContext, inputOptions?: MergeOptions): Merge
   }
 
   const base: OpenApiV3_0 = structuredClone(specs[0]);
+  base.paths ??= {};
+  base.components ??= {};
 
-  base.components = structuredClone(base.components ?? {});
-  base.paths = structuredClone(base.paths ?? {});
-
-  let mergedPaths = filterPaths(base.paths, options.pathFilter);
-  let mergedComponents = base.components ?? {};
+  let mergedPaths = applyPathTransforms(base.paths, options);
+  let mergedComponents = base.components;
 
   for (let i = 1; i < specs.length; i++) {
     const spec = specs[i];
 
     mergedPaths = mergePaths(
       mergedPaths,
-      filterPaths(spec.paths ?? {}, options.pathFilter),
+      applyPathTransforms(spec.paths ?? {}, options),
       options.pathPolicy,
     );
     mergedComponents = mergeComponents(
@@ -47,6 +47,11 @@ export function mergeCore(ctx: MergeContext, inputOptions?: MergeOptions): Merge
   base.components = mergedComponents;
 
   return { ok: true, output: base };
+}
+
+function applyPathTransforms(paths: PathsObject, options: ResolvedMergeOptions): PathsObject {
+  const filteredPaths = filterPaths(paths, options.pathFilter);
+  return renamePaths(filteredPaths, options.pathRename);
 }
 
 function mergeTopLevelFields(

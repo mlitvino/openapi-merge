@@ -20,11 +20,19 @@ export type PathFilter = {
   exclude?: string[];
 };
 
+export type PathRenameRule =
+  | { type: 'rename'; from: string; to: string }
+  | { type: 'regex'; from: string; to: string }
+  | { type: 'fn'; from: string; to: (path: string) => string };
+
+export type PathRename = PathRenameRule[];
+
 export type MergeOptions = {
   versionPolicy?: VersionPolicy;
   pathPolicy?: PathPolicy;
   componentPolicy?: ComponentPolicy;
   pathFilter?: PathFilter;
+  pathRename?: PathRename;
 };
 
 export type ResolvedMergeOptions = Required<MergeOptions>;
@@ -34,6 +42,7 @@ export const DEFAULT_MERGE_OPTIONS: ResolvedMergeOptions = {
   pathPolicy: { mode: 'error' },
   componentPolicy: { mode: 'error' },
   pathFilter: {},
+  pathRename: [],
 };
 
 export function validateOptions(options?: MergeOptions): ResolvedMergeOptions {
@@ -42,6 +51,7 @@ export function validateOptions(options?: MergeOptions): ResolvedMergeOptions {
     pathPolicy: options?.pathPolicy ?? DEFAULT_MERGE_OPTIONS.pathPolicy,
     componentPolicy: options?.componentPolicy ?? DEFAULT_MERGE_OPTIONS.componentPolicy,
     pathFilter: options?.pathFilter ?? DEFAULT_MERGE_OPTIONS.pathFilter,
+    pathRename: options?.pathRename ?? DEFAULT_MERGE_OPTIONS.pathRename,
   };
 }
 
