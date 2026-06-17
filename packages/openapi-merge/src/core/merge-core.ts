@@ -40,25 +40,32 @@ export function mergeCore(ctx: MergeContext, inputOptions?: MergeOptions): Merge
       options.componentPolicy,
     );
 
-    if (base.info == null && spec.info != null) {
-      base.info = structuredClone(spec.info);
-    }
-    if (base.servers == null && spec.servers != null) {
-      base.servers = structuredClone(spec.servers);
-    }
-    if (base.security == null && spec.security != null) {
-      base.security = structuredClone(spec.security);
-    }
-    if (base.tags == null && spec.tags != null) {
-      base.tags = structuredClone(spec.tags);
-    }
-    if (base.externalDocs == null && spec.externalDocs != null) {
-      base.externalDocs = structuredClone(spec.externalDocs);
-    }
+    mergeTopLevelFields(base, spec);
   }
 
   base.paths = mergedPaths;
   base.components = mergedComponents;
 
   return { ok: true, output: base };
+}
+
+function mergeTopLevelFields(
+  base: OpenApiV3_0,
+  spec: OpenApiV3_0,
+): void {
+  if (base.info == null && spec.info != null) {
+    base.info = structuredClone(spec.info);
+  }
+  if (base.servers == null && spec.servers != null) {
+    base.servers = structuredClone(spec.servers);
+  }
+  if (base.security == null && spec.security != null) {
+    base.security = structuredClone(spec.security);
+  }
+  if (base.tags == null && spec.tags != null) {
+    base.tags = structuredClone(spec.tags);
+  }
+  if (base.externalDocs == null && spec.externalDocs != null) {
+    base.externalDocs = structuredClone(spec.externalDocs);
+  }
 }
