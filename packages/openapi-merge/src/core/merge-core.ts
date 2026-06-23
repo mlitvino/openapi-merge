@@ -1,7 +1,7 @@
 import type { Document as OpenApiV3_0, PathsObject } from '@scalar/openapi-types/3.0';
 import { validate } from '../validate.js';
 import { MergeContext, MergeOptions, MergeResult, ResolvedMergeOptions, validateOptions } from '../types.js';
-import { filterPaths } from './filter-paths.js';
+import { filterByTags, filterByPaths } from './filter.js';
 import { mergeComponents, mergePaths } from './merge-paths.js';
 import { renamePaths } from './rename-paths.js';
 
@@ -50,7 +50,8 @@ export function mergeCore(ctx: MergeContext, inputOptions?: MergeOptions): Merge
 }
 
 function applyPathTransforms(paths: PathsObject, options: ResolvedMergeOptions): PathsObject {
-  const filteredPaths = filterPaths(paths, options.pathFilter);
+  const tagSelected = filterByTags(paths, options.tagFilter);
+  const filteredPaths = filterByPaths(tagSelected, options.pathFilter);
   return renamePaths(filteredPaths, options.pathRename);
 }
 
