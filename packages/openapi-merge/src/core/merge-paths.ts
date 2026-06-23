@@ -1,5 +1,5 @@
 import type { ComponentsObject, PathsObject } from '@scalar/openapi-types/3.0';
-import { throwMergeError } from '../errors.js';
+import { throwError } from '../errors.js';
 import type { ComponentPolicy, PathPolicy } from '../types.js';
 
 export type ComponentsMap = Record<string, Record<string, unknown>>;
@@ -70,7 +70,7 @@ function makePathConflictHandler(
   switch (policy.mode) {
     case 'error':
       return () => {
-        throwMergeError('duplicate-path', `Conflicting path: ${pathKey} method ${method}`);
+        throwError('duplicate-path', `Conflicting path: ${pathKey} method ${method}`);
       };
   }
 }
@@ -83,7 +83,7 @@ function makeComponentConflictHandler(
   switch (policy.mode) {
     case 'error':
       return () => {
-        throwMergeError('duplicate-component', `Conflicting component: ${compKey} ${name}`);
+        throwError('duplicate-component', `Conflicting component: ${compKey} ${name}`);
       };
   }
 }

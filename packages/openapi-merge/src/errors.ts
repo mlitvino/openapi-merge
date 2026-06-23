@@ -11,7 +11,7 @@ export function err(type: MergeError['type'], message: string): MergeResult {
   return { ok: false, error: { type, message } };
 }
 
-export function throwMergeError(type: MergeError['type'], message: string): never {
+export function throwError(type: MergeError['type'], message: string): never {
   throw new MergeException({ type, message });
 }
 

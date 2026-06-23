@@ -1,6 +1,6 @@
 import type { Document as OpenApiV3_0 } from '@scalar/openapi-types/3.0';
 
-import { throwMergeError } from './errors.js';
+import { throwError } from './errors.js';
 import type { MergeContext, MergeOptions } from './types';
 
 export function validate(ctx: MergeContext, options?: MergeOptions): void {
@@ -18,7 +18,7 @@ export function validateVersions(
 
   for (const spec of ctx.rawSpecs) {
     if (!isOpenApiV3_0(spec)) {
-      throwMergeError(
+      throwError(
         'invalid-version',
         `Unsupported or invalid OpenAPI v${policy.targetVersion} document.`,
       );
