@@ -47,7 +47,9 @@ export function filterByPaths(paths: PathsObject, filter: PathFilter): PathsObje
 export function filterByTags(paths: PathsObject, filter: TagFilter): PathsObject {
   const { include, exclude } = filter;
 
-  if (!include?.length && !exclude?.length) return paths;
+  if (!include?.length && !exclude?.length) {
+    return paths;
+  }
 
   const result: PathsObject = {};
 
@@ -71,7 +73,8 @@ export function filterByTags(paths: PathsObject, filter: TagFilter): PathsObject
       }
     }
 
-    if (HTTP_METHODS.some((m) => m in filteredItem)) {
+    const hasOperations = HTTP_METHODS.some((m) => m in filteredItem)
+    if (hasOperations) {
       result[pathKey] = filteredItem;
     }
   }

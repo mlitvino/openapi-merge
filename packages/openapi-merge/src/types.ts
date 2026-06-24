@@ -69,7 +69,9 @@ export type MergeResult =
 
 export type MergeError =
   | { type: 'no-inputs'; message: string }
-  | { type: 'invalid-version'; message: string }
+  | { type: 'missing-version'; message: string }
+  | { type: 'swagger-2-unsupported'; message: string }
+  | { type: 'unsupported-openapi'; message: string }
   | { type: 'load-failed'; message: string }
   | { type: 'parse-error'; message: string }
   | { type: 'duplicate-path'; message: string }

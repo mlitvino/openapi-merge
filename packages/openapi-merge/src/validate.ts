@@ -11,17 +11,29 @@ export function validateVersions(
   ctx: MergeContext,
   policy: MergeOptions['versionPolicy'],
 ): void {
-  if (policy === undefined || policy?.mode === 'skip') {
+  if (policy === undefined || policy.mode === 'skip') {
     ctx.parsedSpecs = ctx.rawSpecs.filter((spec) => isOpenApiV3_0(spec));
     return;
   }
 
   for (const spec of ctx.rawSpecs) {
-    if (!isOpenApiV3_0(spec)) {
+    if (!isRecord(spec)) {
+      throwError('missing-version', 'Document is not a valid object.');
+    }
+
+    if (isSwagger2(spec)) {
+      throwError('swagger-2-unsupported', 'Swagger 2.0 documents are not supported.');
+    }
+
+    if (isUnsupportedOpenApi(spec)) {
       throwError(
-        'invalid-version',
-        `Unsupported or invalid OpenAPI v${policy.targetVersion} document.`,
+        'unsupported-openapi',
+        `Unsupported OpenAPI version: ${String(spec.openapi)}. Only OpenAPI 3.0.x is supported.`,
       );
+    }
+
+    if (!isOpenApiV3_0(spec)) {
+      throwError('missing-version', 'Document is missing a valid openapi version field.');
     }
 
     ctx.parsedSpecs.push(spec);
@@ -29,15 +41,15 @@ export function validateVersions(
 }
 
 function isOpenApiV3_0(value: unknown): value is OpenApiV3_0 {
-  if (!isRecord(value)) {
-    return false;
-  }
+  return isRecord(value) && typeof value.openapi === 'string' && value.openapi.startsWith('3.0');
+}
 
-  if (typeof value.openapi === 'string' && value.openapi.startsWith('3.0')) {
-    return true;
-  }
+function isSwagger2(spec: Record<string, unknown>): boolean {
+  return spec.swagger === '2.0';
+}
 
-  return false;
+function isUnsupportedOpenApi(spec: Record<string, unknown>): boolean {
+  return typeof spec.openapi === 'string' && !spec.openapi.startsWith('3.0');
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
