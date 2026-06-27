@@ -1,5 +1,16 @@
 import { MergeContext } from './types';
 
+export const HTTP_METHODS = [
+  'get',
+  'put',
+  'post',
+  'delete',
+  'options',
+  'head',
+  'patch',
+  'trace',
+] as const;
+
 export function createContext(): MergeContext {
   return {
     rawSpecs: [],

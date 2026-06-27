@@ -1,10 +1,9 @@
 import type { ComponentsObject, PathsObject } from '@scalar/openapi-types/3.0';
 import { throwError } from '../errors.js';
 import type { ComponentPolicy, OperationIdPolicy, PathPolicy } from '../types.js';
+import { HTTP_METHODS } from '../utils.js';
 
 export type ComponentsMap = Record<string, Record<string, unknown>>;
-
-const HTTP_METHODS = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'] as const;
 
 export function mergePaths(
   basePaths: PathsObject,
@@ -107,7 +106,7 @@ function makePathConflictHandler(
   switch (policy.mode) {
     case 'error':
       return () => {
-        throwError('duplicate-path', `Conflicting path: ${pathKey} method ${method}`);
+        throwError('duplicate-path', `Duplicate path: ${pathKey} method ${method}`);
       };
   }
 }
@@ -120,7 +119,7 @@ function makeComponentConflictHandler(
   switch (policy.mode) {
     case 'error':
       return () => {
-        throwError('duplicate-component', `Conflicting component: ${compKey} ${name}`);
+        throwError('duplicate-component', `Duplicate component: ${compKey} ${name}`);
       };
   }
 }

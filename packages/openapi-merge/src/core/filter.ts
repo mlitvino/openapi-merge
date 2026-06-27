@@ -1,7 +1,6 @@
 import type { PathsObject } from '@scalar/openapi-types/3.0';
 import type { PathFilter, TagFilter } from '../types.js';
-
-const HTTP_METHODS = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'] as const;
+import { HTTP_METHODS } from '../utils.js';
 
 export function filterByPaths(paths: PathsObject, filter: PathFilter): PathsObject {
   const { include, exclude } = filter;
