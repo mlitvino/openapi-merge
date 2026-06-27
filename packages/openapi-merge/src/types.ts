@@ -15,6 +15,8 @@ export type PathPolicy = { mode: 'error' };
 
 export type ComponentPolicy = { mode: 'error' };
 
+export type OperationIdPolicy = { mode: 'error' };
+
 export type TagFilter = {
   include?: string[];
   exclude?: string[];
@@ -36,6 +38,7 @@ export type MergeOptions = {
   versionPolicy?: VersionPolicy;
   pathPolicy?: PathPolicy;
   componentPolicy?: ComponentPolicy;
+  operationIdPolicy?: OperationIdPolicy;
   tagFilter?: TagFilter;
   pathFilter?: PathFilter;
   pathRename?: PathRename;
@@ -47,6 +50,7 @@ export const DEFAULT_MERGE_OPTIONS: ResolvedMergeOptions = {
   versionPolicy: { mode: 'skip' },
   pathPolicy: { mode: 'error' },
   componentPolicy: { mode: 'error' },
+  operationIdPolicy: { mode: 'error' },
   tagFilter: {},
   pathFilter: {},
   pathRename: [],
@@ -57,6 +61,7 @@ export function validateOptions(options?: MergeOptions): ResolvedMergeOptions {
     versionPolicy: options?.versionPolicy ?? DEFAULT_MERGE_OPTIONS.versionPolicy,
     pathPolicy: options?.pathPolicy ?? DEFAULT_MERGE_OPTIONS.pathPolicy,
     componentPolicy: options?.componentPolicy ?? DEFAULT_MERGE_OPTIONS.componentPolicy,
+    operationIdPolicy: options?.operationIdPolicy ?? DEFAULT_MERGE_OPTIONS.operationIdPolicy,
     tagFilter: options?.tagFilter ?? DEFAULT_MERGE_OPTIONS.tagFilter,
     pathFilter: options?.pathFilter ?? DEFAULT_MERGE_OPTIONS.pathFilter,
     pathRename: options?.pathRename ?? DEFAULT_MERGE_OPTIONS.pathRename,
@@ -76,6 +81,7 @@ export type MergeError =
   | { type: 'parse-error'; message: string }
   | { type: 'duplicate-path'; message: string }
   | { type: 'duplicate-component'; message: string }
+  | { type: 'duplicate-operationid'; message: string }
   | { type: 'internal-error'; message: string };
 
 export type MergeContext = {

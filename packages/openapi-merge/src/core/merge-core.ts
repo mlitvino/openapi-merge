@@ -2,13 +2,13 @@ import type { Document as OpenApiV3_0, PathsObject } from '@scalar/openapi-types
 import { validate } from '../validate.js';
 import { MergeContext, MergeOptions, MergeResult, ResolvedMergeOptions, validateOptions } from '../types.js';
 import { filterByTags, filterByPaths } from './filter.js';
-import { mergeComponents, mergePaths } from './merge-paths.js';
+import { mergeComponents, mergePaths, validateOperationIds } from './merge-paths.js';
 import { renamePaths } from './rename-paths.js';
 
 export function mergeCore(ctx: MergeContext, inputOptions?: MergeOptions): MergeResult {
   const options = validateOptions(inputOptions);
 
-  validate(ctx, { versionPolicy: options.versionPolicy });
+  validate(ctx, options);
 
   const specs = ctx.parsedSpecs;
 
@@ -45,6 +45,8 @@ export function mergeCore(ctx: MergeContext, inputOptions?: MergeOptions): Merge
 
   base.paths = mergedPaths;
   base.components = mergedComponents;
+
+  validateOperationIds(base.paths, options.operationIdPolicy);
 
   return { ok: true, output: base };
 }
