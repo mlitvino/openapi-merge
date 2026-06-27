@@ -72,7 +72,7 @@ describe('merge (MVP)', () => {
     }
   });
 
-  it('merges methods on same path without conflict', () => {
+  it('errors on same path with different methods under error policy', () => {
     const result = merge(
       [
         {
@@ -101,12 +101,9 @@ describe('merge (MVP)', () => {
       { versionPolicy: { mode: 'skip' } },
     );
 
-    expect(result.ok).toBe(true);
-    if (result.ok) {
-      const paths = result.output.paths as Record<string, unknown>;
-      const item = paths['/items'] as Record<string, unknown>;
-      expect(item.get).toBeDefined();
-      expect(item.post).toBeDefined();
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.error.type).toBe('duplicate-path');
     }
   });
 

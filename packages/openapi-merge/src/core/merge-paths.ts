@@ -14,12 +14,7 @@ export function mergePaths(
 
   for (const [pathKey, pathItem] of Object.entries(specPaths)) {
     if (pathKey in mergedPaths) {
-      const baseItem = mergedPaths[pathKey] as Record<string, unknown>;
-      const incomingItem = pathItem as Record<string, unknown>;
-
-      for (const [method, operation] of Object.entries(incomingItem)) {
-        setEntry(baseItem, method, operation, makePathConflictHandler(policy, pathKey, method));
-      }
+      makePathConflictHandler(policy, pathKey)();
     } else {
       mergedPaths[pathKey] = structuredClone(pathItem);
     }
@@ -98,15 +93,11 @@ function makeOperationIdConflictHandler(
   }
 }
 
-function makePathConflictHandler(
-  policy: PathPolicy,
-  pathKey: string,
-  method: string,
-): () => void {
+function makePathConflictHandler(policy: PathPolicy, pathKey: string): () => void {
   switch (policy.mode) {
     case 'error':
       return () => {
-        throwError('duplicate-path', `Duplicate path: ${pathKey} method ${method}`);
+        throwError('duplicate-path', `Duplicate path: ${pathKey}`);
       };
   }
 }
