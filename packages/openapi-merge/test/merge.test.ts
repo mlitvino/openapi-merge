@@ -98,7 +98,7 @@ describe('merge (MVP)', () => {
           },
         },
       ],
-      { versionPolicy: { mode: 'skip' } },
+      { versionPolicy: { mode: 'skip' }, pathPolicy: { mode: 'error' } },
     );
 
     expect(result.ok).toBe(false);
@@ -138,7 +138,7 @@ describe('merge (MVP)', () => {
 
     expect(result.ok).toBe(false);
     if (!result.ok) {
-      expect(result.error.type).toBe('duplicate-path');
+      expect(result.error.type).toBe('duplicate-method');
     }
   });
 

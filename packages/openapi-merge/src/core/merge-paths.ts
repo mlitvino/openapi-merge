@@ -1,6 +1,6 @@
 import type { ComponentsObject, PathsObject } from '@scalar/openapi-types/3.0';
 import { throwError } from '../errors.js';
-import type { ComponentPolicy, OperationIdPolicy, PathPolicy } from '../types.js';
+import type { ComponentPolicy, MethodConflictMode, OperationIdPolicy, PathPolicy } from '../types.js';
 import { HTTP_METHODS } from '../utils.js';
 
 export type ComponentsMap = Record<string, Record<string, unknown>>;
@@ -14,13 +14,64 @@ export function mergePaths(
 
   for (const [pathKey, pathItem] of Object.entries(specPaths)) {
     if (pathKey in mergedPaths) {
-      makePathConflictHandler(policy, pathKey)();
+      resolvePathConflict(policy, pathKey, mergedPaths[pathKey], pathItem);
     } else {
       mergedPaths[pathKey] = structuredClone(pathItem);
     }
   }
 
   return mergedPaths;
+}
+
+function mergePathItem(
+  baseItem: Record<string, unknown>,
+  incomingItem: Record<string, unknown>,
+  pathKey: string,
+  onMethodConflict: MethodConflictMode = 'error',
+): void {
+  for (const [key, value] of Object.entries(incomingItem)) {
+    if ((HTTP_METHODS as readonly string[]).includes(key)) {
+      if (key in baseItem) {
+        resolveMethodConflict(baseItem, key, value, pathKey, onMethodConflict);
+      } else {
+        baseItem[key] = structuredClone(value);
+      }
+    } else if (!(key in baseItem)) {
+      baseItem[key] = structuredClone(value);
+    }
+  }
+}
+
+function resolveMethodConflict(
+  baseItem: Record<string, unknown>,
+  method: string,
+  incoming: unknown,
+  pathKey: string,
+  mode: MethodConflictMode,
+): void {
+  if (mode === 'error') {
+    throwError('duplicate-method', `Duplicate method ${method} on path: ${pathKey}`);
+  }
+  else if (mode === 'last-wins') {
+    baseItem[method] = structuredClone(incoming);
+  }
+  else if (mode === 'first-wins') {
+    // keep base, do nothing
+  }
+}
+
+function resolvePathConflict(
+  policy: PathPolicy,
+  pathKey: string,
+  baseItem: Record<string, unknown>,
+  incomingItem: Record<string, unknown>,
+): void {
+  if (policy.mode === 'error') {
+    throwError('duplicate-path', `Duplicate path: ${pathKey}`);
+  }
+  if (policy.mode === 'merge') {
+    mergePathItem(baseItem, incomingItem, pathKey, policy.onMethodConflict);
+  }
 }
 
 export function mergeComponents(
@@ -89,15 +140,6 @@ function makeOperationIdConflictHandler(
     case 'error':
       return () => {
         throwError('duplicate-operationid', `Duplicate operationId: ${operationId}`);
-      };
-  }
-}
-
-function makePathConflictHandler(policy: PathPolicy, pathKey: string): () => void {
-  switch (policy.mode) {
-    case 'error':
-      return () => {
-        throwError('duplicate-path', `Duplicate path: ${pathKey}`);
       };
   }
 }

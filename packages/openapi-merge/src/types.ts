@@ -11,7 +11,11 @@ export type VersionPolicy = {
   mode: 'skip';
 };
 
-export type PathPolicy = { mode: 'error' };
+export type MethodConflictMode = 'error' | 'first-wins' | 'last-wins';
+
+export type PathPolicy =
+  | { mode: 'error' }
+  | { mode: 'merge'; onMethodConflict?: MethodConflictMode };
 
 export type ComponentPolicy = { mode: 'error' };
 
@@ -48,7 +52,7 @@ export type ResolvedMergeOptions = Required<MergeOptions>;
 
 export const DEFAULT_MERGE_OPTIONS: ResolvedMergeOptions = {
   versionPolicy: { mode: 'skip' },
-  pathPolicy: { mode: 'error' },
+  pathPolicy: { mode: 'merge', onMethodConflict: 'error' },
   componentPolicy: { mode: 'error' },
   operationIdPolicy: { mode: 'error' },
   tagFilter: {},
@@ -80,6 +84,7 @@ export type MergeError =
   | { type: 'load-failed'; message: string }
   | { type: 'parse-error'; message: string }
   | { type: 'duplicate-path'; message: string }
+  | { type: 'duplicate-method'; message: string }
   | { type: 'duplicate-component'; message: string }
   | { type: 'duplicate-operationid'; message: string }
   | { type: 'internal-error'; message: string };
