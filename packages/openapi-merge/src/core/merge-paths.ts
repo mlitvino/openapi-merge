@@ -1,6 +1,11 @@
 import type { ComponentsObject, PathsObject } from '@scalar/openapi-types/3.0';
 import { throwError } from '../errors.js';
-import type { ComponentPolicy, MethodConflictMode, OperationIdPolicy, PathPolicy } from '../types.js';
+import type {
+  ComponentPolicy,
+  MethodConflictMode,
+  OperationIdPolicy,
+  PathPolicy,
+} from '../types.js';
 import { HTTP_METHODS } from '../utils.js';
 
 export type ComponentsMap = Record<string, Record<string, unknown>>;
@@ -51,11 +56,9 @@ function resolveMethodConflict(
 ): void {
   if (mode === 'error') {
     throwError('duplicate-method', `Duplicate method ${method} on path: ${pathKey}`);
-  }
-  else if (mode === 'last-wins') {
+  } else if (mode === 'last-wins') {
     baseItem[method] = structuredClone(incoming);
-  }
-  else if (mode === 'first-wins') {
+  } else if (mode === 'first-wins') {
     // keep base, do nothing
   }
 }
@@ -134,7 +137,7 @@ function setEntry(
 
 function makeOperationIdConflictHandler(
   policy: OperationIdPolicy,
-  operationId: string
+  operationId: string,
 ): () => void {
   switch (policy.mode) {
     case 'error':

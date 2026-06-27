@@ -31,8 +31,6 @@ describe('pathRename — rename type', () => {
       expect(result.output.paths).toHaveProperty('/v1/posts');
     }
   });
-
-
 });
 
 describe('pathRename — regex type', () => {

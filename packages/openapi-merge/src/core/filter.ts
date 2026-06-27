@@ -72,7 +72,7 @@ export function filterByTags(paths: PathsObject, filter: TagFilter): PathsObject
       }
     }
 
-    const hasOperations = HTTP_METHODS.some((m) => m in filteredItem)
+    const hasOperations = HTTP_METHODS.some((m) => m in filteredItem);
     if (hasOperations) {
       result[pathKey] = filteredItem;
     }

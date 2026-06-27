@@ -1,7 +1,13 @@
 import type { Document as OpenApiV3_0, PathsObject } from '@scalar/openapi-types/3.0';
 import { validate } from '../validate.js';
-import { MergeContext, MergeOptions, MergeResult, ResolvedMergeOptions, validateOptions } from '../types.js';
-import { filterByTags, filterByPaths } from './filter.js';
+import {
+  MergeContext,
+  MergeOptions,
+  MergeResult,
+  ResolvedMergeOptions,
+  validateOptions,
+} from '../types.js';
+import { filterByPaths, filterByTags } from './filter.js';
 import { mergeComponents, mergePaths, validateOperationIds } from './merge-paths.js';
 import { renamePaths } from './rename-paths.js';
 
