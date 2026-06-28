@@ -92,7 +92,16 @@ export function mergeComponents(
 
     const target = mergedComponents[compKey];
     for (const [name, obj] of Object.entries(compMap)) {
-      setEntry(target, name, obj, makeComponentConflictHandler(policy, compKey, name));
+      if (name in target) {
+        switch (policy.mode) {
+          case 'first-wins':
+            break;
+          case 'error':
+            throwError('duplicate-component', `Duplicate component: ${compKey} ${name}`);
+        }
+      } else {
+        target[name] = structuredClone(obj);
+      }
     }
   }
 
@@ -122,19 +131,6 @@ export function validateOperationIds(paths: PathsObject, policy: OperationIdPoli
   }
 }
 
-function setEntry(
-  target: Record<string, unknown>,
-  key: string,
-  value: unknown,
-  onConflict: () => void,
-): void {
-  if (key in target) {
-    onConflict();
-    return;
-  }
-  target[key] = structuredClone(value);
-}
-
 function makeOperationIdConflictHandler(
   policy: OperationIdPolicy,
   operationId: string,
@@ -143,19 +139,6 @@ function makeOperationIdConflictHandler(
     case 'error':
       return () => {
         throwError('duplicate-operationid', `Duplicate operationId: ${operationId}`);
-      };
-  }
-}
-
-function makeComponentConflictHandler(
-  policy: ComponentPolicy,
-  compKey: string,
-  name: string,
-): () => void {
-  switch (policy.mode) {
-    case 'error':
-      return () => {
-        throwError('duplicate-component', `Duplicate component: ${compKey} ${name}`);
       };
   }
 }

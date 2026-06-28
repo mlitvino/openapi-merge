@@ -17,7 +17,9 @@ export type PathPolicy =
   | { mode: 'error' }
   | { mode: 'merge'; onMethodConflict?: MethodConflictMode };
 
-export type ComponentPolicy = { mode: 'error' };
+export type ComponentPolicy =
+  | { mode: 'error' }
+  | { mode: 'first-wins' };
 
 export type OperationIdPolicy = { mode: 'error' };
 
