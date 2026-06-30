@@ -1,7 +1,8 @@
 {
-  "name": "openapi-merge",
+  "name": "@mlitvino/openapi-merge",
   "version": "0.0.1",
-  "description": "OpenAPI merge library",
+  "description": "Merge multiple OpenAPI 3.0 documents into a single deterministic specification, with governed conflict resolution for paths, components, and operationIds, plus $ref integrity preservation.",
+  "license": "MIT",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "type": "module",
