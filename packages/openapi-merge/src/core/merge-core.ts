@@ -10,6 +10,7 @@ import {
 import { filterByPaths, filterByTags } from './filter.js';
 import { mergeComponents, mergePaths, validateOperationIds } from './merge-paths.js';
 import { renamePaths } from './rename-paths.js';
+import { resolveComponentConflicts } from './rewrite-refs.js';
 
 export function mergeCore(ctx: MergeContext, inputOptions?: MergeOptions): MergeResult {
   const options = validateOptions(inputOptions);
@@ -33,7 +34,7 @@ export function mergeCore(ctx: MergeContext, inputOptions?: MergeOptions): Merge
   let mergedComponents = base.components;
 
   for (let i = 1; i < specs.length; i++) {
-    const spec = specs[i];
+    const spec = resolveComponentConflicts(specs[i], mergedComponents, options.componentPolicy);
 
     mergedPaths = mergePaths(
       mergedPaths,

@@ -93,11 +93,17 @@ export function mergeComponents(
     const target = mergedComponents[compKey];
     for (const [name, obj] of Object.entries(compMap)) {
       if (name in target) {
-        switch (policy.mode) {
-          case 'first-wins':
-            break;
-          case 'error':
-            throwError('duplicate-component', `Duplicate component: ${compKey} ${name}`);
+        if (policy.mode === 'first-wins') {
+          // keep base, skip incoming
+        } else if (policy.mode === 'error') {
+          throwError('duplicate-component', `Duplicate component: ${compKey} ${name}`);
+        } else {
+          // suffix | rename: conflicts are resolved upstream by resolveComponentConflicts;
+          // a residual collision here means the rename produced a non-unique name
+          throwError(
+            'internal-error',
+            `Unresolved component conflict after rewrite: ${compKey} ${name}`,
+          );
         }
       } else {
         target[name] = structuredClone(obj);

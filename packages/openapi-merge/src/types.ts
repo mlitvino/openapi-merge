@@ -19,7 +19,9 @@ export type PathPolicy =
 
 export type ComponentPolicy =
   | { mode: 'error' }
-  | { mode: 'first-wins' };
+  | { mode: 'first-wins' }
+  | { mode: 'suffix'; value: string }
+  | { mode: 'rename'; fn: (category: string, name: string) => string };
 
 export type OperationIdPolicy = { mode: 'error' };
 
