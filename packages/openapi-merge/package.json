@@ -3,11 +3,38 @@
   "version": "0.0.1",
   "description": "Merge multiple OpenAPI 3.0 documents into a single deterministic specification, with governed conflict resolution for paths, components, and operationIds, plus $ref integrity preservation.",
   "license": "MIT",
+  "author": "Mykhailo Litvinov <mi.litvino@gmail.com>",
+  "keywords": [
+    "openapi",
+    "swagger",
+    "openapi3",
+    "merge",
+    "combine",
+    "bundle",
+    "specification"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mlitvino/openapi-merge.git"
+  },
+  "homepage": "https://github.com/mlitvino/openapi-merge#readme",
+  "bugs": {
+    "url": "https://github.com/mlitvino/openapi-merge/issues"
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "files": [
-    "dist"
+    "dist",
+    "LICENSE",
+    "README.md"
   ],
   "scripts": {
     "dev": "tsx src/index.ts",

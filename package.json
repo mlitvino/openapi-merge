@@ -9,11 +9,11 @@
     "dev": "pnpm -r dev",
     "format": "pnpm dprint fmt",
     "format:check": "pnpm dprint check",
-    "lint": "pnpm --filter openapi-merge lint",
-    "lint:fix": "pnpm --filter openapi-merge lint --fix",
+    "lint": "pnpm --filter @mlitvino/openapi-merge lint",
+    "lint:fix": "pnpm --filter @mlitvino/openapi-merge lint --fix",
     "lint:staged": "pnpm lint:fix && pnpm format",
-    "test": "pnpm --filter openapi-merge test",
-    "typecheck": "pnpm --filter openapi-merge typecheck",
+    "test": "pnpm --filter @mlitvino/openapi-merge test",
+    "typecheck": "pnpm --filter @mlitvino/openapi-merge typecheck",
     "prepare": "husky"
   },
   "devDependencies": {
