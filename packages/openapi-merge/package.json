@@ -39,6 +39,7 @@
   "scripts": {
     "dev": "tsx src/index.ts",
     "build": "tsc -p tsconfig.json",
+    "prepublishOnly": "pnpm run build",
     "clean": "rm -rf dist",
     "lint": "eslint . --ext .ts,.tsx",
     "test": "vitest run",
