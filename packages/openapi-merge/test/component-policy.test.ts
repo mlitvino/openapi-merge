@@ -142,7 +142,6 @@ describe('componentPolicy', () => {
     });
 
     it('auto-resolves a suffix that itself collides', () => {
-      // base already has both User and User_v2; incoming User must become User_v22
       const result = mergeTwo(
         spec('A', { User: USER_A, User_v2: { type: 'object' } }),
         spec('B', { User: USER_B }),
@@ -153,6 +152,25 @@ describe('componentPolicy', () => {
       if (result.ok) {
         const schemas = result.output.components!.schemas as Schemas;
         expect(Object.keys(schemas).sort()).toEqual(['User', 'User_v2', 'User_v22']);
+      }
+    });
+
+    it('does not clobber an incoming component that already uses the suffixed name', () => {
+      const result = mergeTwo(
+        spec('A', { User: USER_A }),
+        spec('B', {
+          User: USER_B,
+          User_v2: { type: 'object', properties: { original: { type: 'string' } } },
+        }),
+        { componentPolicy: { mode: 'suffix', value: '_v2' } },
+      );
+
+      expect(result.ok).toBe(true);
+      if (result.ok) {
+        const schemas = result.output.components!.schemas as Record<string, any>;
+        expect(Object.keys(schemas).sort()).toEqual(['User', 'User_v2', 'User_v22']);
+        expect(schemas.User_v2.properties).toHaveProperty('original');
+        expect(schemas.User_v22.properties).toHaveProperty('email');
       }
     });
   });

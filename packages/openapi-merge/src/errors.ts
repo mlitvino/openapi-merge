@@ -1,4 +1,4 @@
-import type { MergeError, MergeResult } from './types';
+import type { MergeError, MergeResult } from './types.js';
 
 export class MergeException extends Error {
   constructor(public readonly error: MergeError) {

@@ -36,7 +36,7 @@ function buildRenameMap(
     if (!compMap || typeof compMap !== 'object') continue;
 
     const baseNames = baseComponents[category] ?? {};
-    const taken = new Set(Object.keys(baseNames));
+    const taken = new Set([...Object.keys(baseNames), ...Object.keys(compMap)]);
 
     for (const name of Object.keys(compMap)) {
       if (!(name in baseNames)) continue;

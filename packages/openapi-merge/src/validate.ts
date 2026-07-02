@@ -1,7 +1,7 @@
 import type { Document as OpenApiV3_0 } from '@scalar/openapi-types/3.0';
 
 import { throwError } from './errors.js';
-import type { MergeContext, MergeOptions } from './types';
+import type { MergeContext, MergeOptions } from './types.js';
 
 export function validate(ctx: MergeContext, options?: MergeOptions): void {
   validateVersions(ctx, options?.versionPolicy);

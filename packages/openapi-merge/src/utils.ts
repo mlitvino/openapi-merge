@@ -1,4 +1,4 @@
-import { MergeContext } from './types';
+import type { MergeContext } from './types.js';
 
 export const HTTP_METHODS = [
   'get',
