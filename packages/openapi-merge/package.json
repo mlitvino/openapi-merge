@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Merge multiple OpenAPI 3.0 documents into a single deterministic specification, with governed conflict resolution for paths, components, and operationIds, plus $ref integrity preservation.",
   "license": "MIT",
-  "author": "Mykhailo Litvinov <mi.litvino@gmail.com>",
+  "author": "Mykhailo Litvinov",
   "keywords": [
     "openapi",
     "swagger",
